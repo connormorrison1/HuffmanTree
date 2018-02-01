@@ -26,7 +26,7 @@ class Node{
 	
 	public boolean hasChild()
 	{
-		if(leftChild != null || rightChild != null)
+		if(leftNode != null || rightNode != null)
 		{
 			return true;
 		}
@@ -422,9 +422,9 @@ public class main {
 			iterator1 = theQueue.poll();
 			iterator2 = theQueue.poll();
 			Node iterator3 = new Node(); 
-			iterator3.iData = iterator1.iData + iterator2.iData;
-			iterator3.leftChild = iterator1;
-			iterator3.rightChild = iterator2;
+			iterator3.freq = iterator1.freq + iterator2.freq;
+			iterator3.leftNode = iterator1;
+			iterator3.rightNode = iterator2;
 			theQueue.add(iterator3);
 		}
 		theTree.makeTree(theQueue.poll());
@@ -436,19 +436,19 @@ class NodeComparator implements Comparator<Node>
 {
 	public int compare(Node x, Node y)
 	{
-		if(x.iData < y.iData)
+		if(x.freq < y.freq)
 		{
 			return -1;
 		}
-		if(x.iData > y.iData)
+		if(x.freq > y.freq)
 		{
 			return 1;
 		}
-		if(x.iData == y.iData&& x.hasChild())
+		if(x.freq == y.freq&& x.hasChild())
 		{
 			return -1;
 		}
-		if(x.iData == y.iData&& y.hasChild())
+		if(x.freq == y.freq&& y.hasChild())
 		{
 			return 1;
 		}
