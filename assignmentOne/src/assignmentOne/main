@@ -407,8 +407,6 @@ public class main {
 		}
 		System.out.println("Total letters: " + totalLetters);
 		
-		
-		Tree theTree = new Tree();
 		Comparator<Node> comparator = new NodeComparator();
 		PriorityQueue<Node> theQueue = new PriorityQueue<Node>(totalLetters, comparator);
 		Node iterator1 = new Node();
