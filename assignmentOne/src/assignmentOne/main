@@ -431,6 +431,7 @@ public class main {
 		theTree.displayTree();
 		
 	}
+}
 	
 class NodeComparator implements Comparator<Node>
 {
