@@ -13,6 +13,8 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.Stack;
+import java.util.AbstractQueue;
+import java.util.PriorityQueue;
 
 
 
@@ -22,12 +24,31 @@ class Node{
 	public int freq;
 	public String id;
 	
+	public boolean hasChild()
+	{
+		if(leftChild != null || rightChild != null)
+		{
+			return true;
+		}
+		else
+		{
+			return false;
+		}
+	}
 }
+
+
 class Tree{
 	public Node root;
 	public Tree(){
 		root =null;
 	}
+	
+	public void makeTree(Node n)
+	{
+		root = n;
+	}
+	
 	public void insert(String id, int freq){
 		Node node = new Node();
 		node.id = id;
@@ -385,5 +406,55 @@ public class main {
 			}
 		}
 		System.out.println("Total letters: " + totalLetters);
+		
+		
+		Tree theTree = new Tree();
+		Comparator<Node> comparator = new NodeComparator();
+		PriorityQueue<Node> theQueue = new PriorityQueue<Node>(totalLetters, comparator);
+		Node iterator1 = new Node();
+		Node iterator2 = new Node();
+		while(!(theQueue.isEmpty()))
+		{
+			if(theQueue.size() == 1)
+			{
+				break;
+			}
+			iterator1 = theQueue.poll();
+			iterator2 = theQueue.poll();
+			Node iterator3 = new Node(); 
+			iterator3.iData = iterator1.iData + iterator2.iData;
+			iterator3.leftChild = iterator1;
+			iterator3.rightChild = iterator2;
+			theQueue.add(iterator3);
 		}
+		theTree.makeTree(theQueue.poll());
+		theTree.displayTree();
+		
+	}
+	
+	class NodeComparator implements Comparator<Node>
+{
+	public int compare(Node x, Node y)
+	{
+		if(x.iData < y.iData())
+		{
+			return -1;
+		}
+		if(x.iData() > y.iData())
+		{
+			return 1;
+		}
+		if(x.iData() == y.iData()&& x.hasChild())
+		{
+			return -1;
+		}
+		if(x.iData() == y.iData()&& y.hasChild())
+		{
+			return 1;
+		}
+		else 
+		{
+			return 0;
+		}
+	}
 }
