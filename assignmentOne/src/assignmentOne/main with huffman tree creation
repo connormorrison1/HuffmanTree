@@ -1,0 +1,464 @@
+/*
+ * Authors: Connor Morrison, Chris Miller
+ * Date:12/06/17
+ * Overview: This program creates a Huffman Tree from a text document, encodes the document, then decodes it.
+ * */
+package assignmentOne;
+
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.util.Arrays;
+import java.util.Comparator;
+import java.util.PriorityQueue;
+import java.util.Stack;
+
+
+
+class Node{
+	public Node leftNode;
+	public Node rightNode;
+	public int freq;
+	public String id;
+	
+	public boolean hasChild()
+	{
+		if(leftNode != null || rightNode != null)
+		{
+			return true;
+		}
+		else
+		{
+			return false;
+		}
+	}
+}
+
+
+class Tree{
+	public Node root;
+	public Tree(){
+		root =null;
+	}
+	
+	public void makeTree(Node n)
+	{
+		root = n;
+	}
+	
+	public void insert(String id, int freq){
+		Node node = new Node();
+		node.id = id;
+		node.freq = freq;
+		node.leftNode = null;
+		node.rightNode = null;
+		if(root ==null){
+			root = node;
+		}else{
+			Node current = root;
+			Node parent;
+			while(true){
+				parent = current;
+				if(freq < current.freq){
+					current = current.leftNode;
+					if(current == null) {             // if the end of the line        
+						parent.leftNode = node;   // insert on left
+						return;                    
+					}
+				}else{
+					current = current.rightNode;
+					if(current == null){
+						parent.rightNode = node;
+						return;    
+					}
+				}
+			}
+		}
+	}
+	private void inOrder(Node localRoot) {
+		if (localRoot != null) {
+			inOrder(localRoot.leftNode);
+			System.out.print(localRoot.id + " ");
+			inOrder(localRoot.rightNode);		
+		}
+	}
+
+	public void displayTree() {
+		Stack<Node> globalStack = new Stack<Node>();
+		globalStack.push(root);
+		int nBlanks = 32;
+		boolean isRowEmpty = false;
+		System.out.println(".................................................................");
+		while (isRowEmpty==false) {
+			Stack<Node> localStack = new Stack<Node>();
+			isRowEmpty = true;
+			
+			for (int j = 0; j < nBlanks; j++) {
+				System.out.print(' ');
+			}
+
+			while (globalStack.isEmpty()==false) {
+				Node temp = (Node) globalStack.pop();
+				if (temp != null) {
+					System.out.print(temp.freq);
+					localStack.push(temp.leftNode);
+					localStack.push(temp.rightNode);
+					if (temp.leftNode != null ||
+							temp.rightNode != null) {
+						isRowEmpty = false;
+					}
+				}
+				else {
+					System.out.print("--");
+					localStack.push(null);
+					localStack.push(null);
+				}
+
+				for (int j = 0; j < nBlanks*2-2; j++) {
+					System.out.print(' ');
+				}
+			} // end while globalStack not empty
+			System.out.println();
+			nBlanks /= 2;
+			while (localStack.isEmpty()==false) {
+				globalStack.push(localStack.pop());
+			} // end while isRowEmpty is false
+			System.out.println(
+			".................................................................");
+		} // end displayTree()
+	} // end class Tree
+}
+public class main {
+	public static void main(String[] args)throws IOException{
+		Tree theTree = new Tree();
+		Comparator<Node> comparator = new NodeComparator();
+		// TODO Auto-generated method stub
+		File input = new File("input.txt");
+		File output = new File("output.txt");
+		BufferedReader br = new BufferedReader(new FileReader(input));
+		FileWriter fp = new FileWriter(output);
+		//[rows][columns]
+		String[][] multi = new String[][]{
+			  { "space", "0"},
+			  { "a", "0"},
+			  { "b", "0"},
+			  { "c", "0"},
+			  { "d", "0"},
+			  { "e", "0"},
+			  { "f", "0"},
+			  { "g", "0"},
+			  { "h", "0"},
+			  { "i", "0"},
+			  { "j", "0"},
+			  { "k", "0"},
+			  { "l", "0"},
+			  { "m", "0"},
+			  { "n", "0"},
+			  { "o", "0"},
+			  { "p", "0"},
+			  { "q", "0"},
+			  { "r", "0"},
+			  { "s", "0"},
+			  { "t", "0"},
+			  { "u", "0"},
+			  { "v", "0"},
+			  { "w", "0"},
+			  { "x", "0"},
+			  { "y", "0"},
+			  { "z", "0"},
+			};
+		
+		//capital letters
+		int[] A = {01000001,0};
+		int[] B = {01000010,0};
+		int[] C = {01000011,0};
+		int[] D = {01000100,0};
+		int[] E = {01000101,0};
+		int[] F = {01000110,0};
+		int[] G = {01000111,0};
+		int[] H = {01001000,0};
+		int[] I = {01001001,0};
+		int[] J = {01001010,0};
+		int[] K = {01001011,0};
+		int[] L = {01001100,0};
+		int[] M = {01001101,0};
+		int[] N = {01001110,0};
+		int[] O = {01001111,0};
+		int[] P = {01010000,0};
+		int[] Q = {01010001,0};
+		int[] R = {01010010,0};
+		int[] S = {01010011,0};
+		int[] T = {01010100,0};
+		int[] U = {01010101,0};
+		int[] V = {01010110,0};
+		int[] W = {01010111,0};
+		int[] X = {01011000,0};
+		int[] Y = {01011001,0};
+		int[] Z = {01011010,0};
+		//counting the components.
+		/*
+		 *  x Accept a text message.
+			x Construct a frequency table for the message.
+			Create a Huffman tree for this message.
+			Create a code table.
+			Encode the message into binary
+			Decode the message from binary back to text.
+		 * 
+		 * */
+		String text = br.readLine();
+		System.out.println(text);
+		String[] comps = text.split("");
+		for(int i2 = 0; i2 < comps.length; i2++){
+			if(comps[i2].equals(" ")){
+				int val = Integer.parseInt(multi[0][1]);
+				val+=1;
+				multi[0][1] = String.valueOf(val);
+			}
+			if(comps[i2].equals("a")){
+				int val = Integer.parseInt(multi[1][1]);
+				val+=1;
+				multi[1][1] = String.valueOf(val);
+			}if(comps[i2].equals("b")){
+				int val = Integer.parseInt(multi[2][1]);
+				val+=1;
+				multi[2][1] = String.valueOf(val);
+			}if(comps[i2].equals("c")){
+				int val = Integer.parseInt(multi[3][1]);
+				val+=1;
+				multi[3][1] = String.valueOf(val);
+			}if(comps[i2].equals("d")){
+				int val = Integer.parseInt(multi[4][1]);
+				val+=1;
+				multi[4][1] = String.valueOf(val);
+			}if(comps[i2].equals("e")){
+				int val = Integer.parseInt(multi[5][1]);
+				val+=1;
+				multi[5][1] = String.valueOf(val);
+			}if(comps[i2].equals("f")){
+				int val = Integer.parseInt(multi[6][1]);
+				val+=1;
+				multi[6][1] = String.valueOf(val);
+			}if(comps[i2].equals("g")){
+				int val = Integer.parseInt(multi[7][1]);
+				val+=1;
+				multi[7][1] = String.valueOf(val);
+			}if(comps[i2].equals("h")){
+				int val = Integer.parseInt(multi[8][1]);
+				val+=1;
+				multi[8][1] = String.valueOf(val);
+			}if(comps[i2].equals("i")){
+				int val = Integer.parseInt(multi[9][1]);
+				val+=1;
+				multi[9][1] = String.valueOf(val);
+			}if(comps[i2].equals("j")){
+				int val = Integer.parseInt(multi[10][1]);
+				val+=1;
+				multi[10][1] = String.valueOf(val);
+			}if(comps[i2].equals("k")){
+				int val = Integer.parseInt(multi[11][1]);
+				val+=1;
+				multi[11][1] = String.valueOf(val);
+			}if(comps[i2].equals("l")){
+				int val = Integer.parseInt(multi[11][1]);
+				val+=1;
+				multi[11][1] = String.valueOf(val);
+			}if(comps[i2].equals("m")){
+				int val = Integer.parseInt(multi[12][1]);
+				val+=1;
+				multi[12][1] = String.valueOf(val);
+			}if(comps[i2].equals("n")){
+				int val = Integer.parseInt(multi[13][1]);
+				val+=1;
+				multi[13][1] = String.valueOf(val);
+			}if(comps[i2].equals("o")){
+				int val = Integer.parseInt(multi[14][1]);
+				val+=1;
+				multi[14][1] = String.valueOf(val);
+			}if(comps[i2].equals("p")){
+				int val = Integer.parseInt(multi[15][1]);
+				val+=1;
+				multi[15][1] = String.valueOf(val);
+			}if(comps[i2].equals("q")){
+				int val = Integer.parseInt(multi[16][1]);
+				val+=1;
+				multi[16][1] = String.valueOf(val);
+			}if(comps[i2].equals("r")){
+				int val = Integer.parseInt(multi[17][1]);
+				val+=1;
+				multi[18][1] = String.valueOf(val);
+			}if(comps[i2].equals("s")){
+				int val = Integer.parseInt(multi[19][1]);
+				val+=1;
+				multi[19][1] = String.valueOf(val);
+			}if(comps[i2].equals("t")){
+				int val = Integer.parseInt(multi[20][1]);
+				val+=1;
+				multi[20][1] = String.valueOf(val);
+			}if(comps[i2].equals("u")){
+				int val = Integer.parseInt(multi[21][1]);
+				val+=1;
+				multi[21][1] = String.valueOf(val);
+			}if(comps[i2].equals("v")){
+				int val = Integer.parseInt(multi[21][1]);
+				val+=1;
+				multi[21][1] = String.valueOf(val);
+			}if(comps[i2].equals("w")){
+				int val = Integer.parseInt(multi[21][1]);
+				val+=1;
+				multi[21][1] = String.valueOf(val);
+			}if(comps[i2].equals("x")){
+				int val = Integer.parseInt(multi[22][1]);
+				val+=1;
+				multi[0][1] = String.valueOf(val);
+			}if(comps[i2].equals("y")){
+				int val = Integer.parseInt(multi[23][1]);
+				val+=1;
+				multi[23][1] = String.valueOf(val);
+			}if(comps[i2].equals("z")){
+				int val = Integer.parseInt(multi[24][1]);
+				val+=1;
+				multi[24][1] = String.valueOf(val);
+			}
+			
+			//capital letters
+			if(comps[i2].equals("A")){
+				A[1] +=1;
+			}if(comps[i2].equals("B")){
+				B[1] +=1;
+			}if(comps[i2].equals("C")){
+				C[1] +=1;
+			}if(comps[i2].equals("D")){
+				D[1] +=1;
+			}if(comps[i2].equals("E")){
+				E[1] +=1;
+			}if(comps[i2].equals("F")){
+				F[1] +=1;
+			}if(comps[i2].equals("G")){
+				G[1] +=1;
+			}if(comps[i2].equals("H")){
+				H[1] +=1;
+			}if(comps[i2].equals("I")){
+				I[1] +=1;
+			}if(comps[i2].equals("J")){
+				J[1] +=1;
+			}if(comps[i2].equals("K")){
+				K[1] +=1;
+			}if(comps[i2].equals("L")){
+				L[1] +=1;
+			}if(comps[i2].equals("M")){
+				M[1] +=1;
+			}if(comps[i2].equals("N")){
+				N[1] +=1;
+			}if(comps[i2].equals("O")){
+				O[1] +=1;
+			}if(comps[i2].equals("P")){
+				P[1] +=1;
+			}if(comps[i2].equals("Q")){
+				Q[1] +=1;
+			}if(comps[i2].equals("R")){
+				R[1] +=1;
+			}if(comps[i2].equals("S")){
+				S[1] +=1;
+			}if(comps[i2].equals("T")){
+				T[1] +=1;
+			}if(comps[i2].equals("U")){
+				U[1] +=1;
+			}if(comps[i2].equals("V")){
+				V[1] +=1;
+			}if(comps[i2].equals("W")){
+				W[1] +=1;
+			}if(comps[i2].equals("X")){
+				X[1] +=1;
+			}if(comps[i2].equals("Y")){
+				Y[1] +=1;
+			}if(comps[i2].equals("Z")){
+				Z[1] +=1;
+			}
+		}
+		String[] id = new String[30];
+		int[] freqCount = new int[30];
+		//count nums in prog
+		int counter =0;
+		for(int w3 = 0; w3 < multi.length; w3++){
+			if(Integer.parseInt(multi[w3][1])>0){
+				id[counter] = multi[w3][0];
+				freqCount[counter] = Integer.parseInt(multi[w3][1]);
+				System.out.println(id[counter]);
+				counter++;
+			}
+		}
+		String[][] finTable = new String[id.length][2];
+		int totalLetters = 0;
+	    System.out.println("Frequency Table");
+	    System.out.println("---------------");
+		System.out.println("CHAR   COUNT");
+		for(int t4 = 0; t4 < id.length; t4++){
+			if(id[t4] != null){
+				finTable[t4][0] = id[t4];
+				finTable[t4][1] = String.valueOf(freqCount[t4]);
+				totalLetters++;
+				System.out.println(finTable[t4][0] + "      " + finTable[t4][1]);
+				
+			}
+		}
+		System.out.println("Total letters: " + totalLetters);
+		PriorityQueue<Node> theQueue = new PriorityQueue<Node>(totalLetters, comparator);
+		for(int t5 = 0; t5 < id.length; t5++) {
+			if(id[t5] != null){
+				Node queueAdder = new Node();
+				queueAdder.id = finTable[t5][0];
+				queueAdder.freq = Integer.parseInt(finTable[t5][1]);
+				theQueue.add(queueAdder);
+			}
+		}
+		
+		Node iterator1 = new Node();
+		Node iterator2 = new Node();
+		while(!(theQueue.isEmpty()))
+		{
+			if(theQueue.size() == 1)
+			{
+				break;
+			}
+			iterator1 = theQueue.poll();
+			iterator2 = theQueue.poll();
+			Node iterator3 = new Node(); 
+			iterator3.freq = iterator1.freq + iterator2.freq;
+			iterator3.leftNode = iterator1;
+			iterator3.rightNode = iterator2;
+			theQueue.add(iterator3);
+		}
+		theTree.makeTree(theQueue.poll());
+		theTree.displayTree();
+		
+	}
+}
+	
+class NodeComparator implements Comparator<Node>
+{
+	public int compare(Node x, Node y)
+	{
+		if(x.freq < y.freq)
+		{
+			return -1;
+		}
+		if(x.freq > y.freq)
+		{
+			return 1;
+		}
+		if(x.freq == y.freq&& x.hasChild())
+		{
+			return -1;
+		}
+		if(x.freq == y.freq&& y.hasChild())
+		{
+			return 1;
+		}
+		else 
+		{
+			return 0;
+		}
+	}
+}
