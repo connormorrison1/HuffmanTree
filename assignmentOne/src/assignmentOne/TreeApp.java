@@ -8,14 +8,13 @@ import java.util.AbstractQueue;
 import java.util.Comparator;
 import java.util.PriorityQueue;
 
-//////////////////////////////////////////////////////////////
 class Node {
-	public int iData;           // data item (key)
-	public char dData;        // data item
-	public Node leftChild;      // this Node's left child
-	public Node rightChild;     // this Node's right child
+	public int iData;           
+	public char dData;      
+	public Node leftChild;      
+	public Node rightChild; 
 
-	public void displayNode() { // display ourself
+	public void displayNode() {
 		System.out.print('{');
 		System.out.print(iData);
 		System.out.print(", ");
@@ -39,103 +38,99 @@ class Node {
 			return false;
 		}
 	}
-} // end Class Node
-////////////////////////////////////////////////////////////////
+}
 
 class Tree {
-	private Node root;                 // first Node of Tree
+	private Node root;                 
 	
-	public Tree() {                    // constructor
-		root = null;                   // no nodes in tree yet
+	public Tree() {                
+		root = null;              
 	}
 	
 	
-	public Node find(int key) {      // find node with given key
-		Node current = root;         // (assumes non-empty tree)
-		while (current.iData != key) {          // while no match
-			if (key < current.iData) {          // go left?
+	public Node find(int key) {    
+		Node current = root;       
+		while (current.iData != key) {        
+			if (key < current.iData) {     
 				current =  current.leftChild; 
 			}
-			else {                              // or go right?
+			else {                           
 				current =  current.rightChild;
 			}
-			if(current == null)                 // if no child
-			{                                   // didn't find it
+			if(current == null)                
+			{                              
 				return null;              
 			}			
 		}
-		return current;                         // found it
-	}  //end find()
+		return current;
+	} 
 	
 	
 	public void insert(int id, char dd) {
-		Node newNode = new Node();    // make new Node
-		newNode.iData = id;           // insert data
+		Node newNode = new Node();   
+		newNode.iData = id;
 		newNode.dData = dd;
 		newNode.leftChild = null;
 		newNode.rightChild = null;
-		if(root == null) {            // no node in root
+		if(root == null) {          
 			root = newNode;
 		}
-		else {                        // root occupied
-			Node current = root;      // start at root  
+		else {  
+			Node current = root;
 			Node parent;
-			while (true) {            // exits internally			
+			while (true) {			
 				parent = current;  
-				if (id < current.iData) {              // go left?
+				if (id < current.iData) {            
 					current =  current.leftChild;
-					if(current == null) {             // if the end of the line        
-						parent.leftChild = newNode;   // insert on left
+					if(current == null) {    
+						parent.leftChild = newNode; 
 						return;                    
 					}
-				} //end if go left
-				else {                                // or go right?
+				}
+				else {
 					current =  current.rightChild;      
-					if(current == null)               // if the end of the line
-					{                                 // insert on right
+					if(current == null)               
+					{                            
 						parent.rightChild = newNode;
 						return;                    
 					}
 				}
 			}
 		}
-	} // end insert()
+	}
 
 	
-	public boolean delete(int key) {             // delete node with given key
-		Node current = root;		             // (assumes non-empty list)
+	public boolean delete(int key) {
+		Node current = root;
 		Node parent = root;
 		boolean isLeftChild = true;
 
-		while (current.iData != key) {           // search for Node
+		while (current.iData != key) {
 			parent = current;
-			if (key < current.iData) {           // go left?
+			if (key < current.iData) {
 				isLeftChild = true;
 				current =  current.leftChild;
 			}
-			else {                               // or go right?
+			else {
 				isLeftChild = false;
 				current =  current.rightChild;
 			}
-			if(current == null) {                // end of the line,                             
-				return false;                    // didn't find it
+			if(current == null) {                         
+				return false;
 			}			
 		}
-		//found the node to delete
 
-		//if no children, simply delete it
 		if (current.leftChild == null && current.rightChild == null) {
-			if (current == root) {              // if root,
-				root = null;                    // tree is empty
+			if (current == root) {
+				root = null;
 			}
 			else if (isLeftChild) {
-				parent.leftChild = null;        // disconnect
-			}                                   // from parent
+				parent.leftChild = null;
+			}
 			else {
 				parent.rightChild = null;
 			}
 		}
-		//if no right child, replace with left subtree
 		else if (current.rightChild == null) {  
 			if (current == root) {
 				root = current.leftChild;
@@ -148,7 +143,6 @@ class Tree {
 			}
 		}
 
-		//if no left child, replace with right subtree
 		else if (current.leftChild == null) {  
 			if (current == root) {
 				root = current.rightChild;
@@ -161,11 +155,8 @@ class Tree {
 			}
 		}
 
-		else { // two children, so replace with inorder successor
-			   // get successor of node to delete (current)
+		else { 
 			Node successor = getSuccessor(current);
-
-			// connect parent of current to successor instead
 			if (current == root) {
 				root = successor;
 			}
@@ -176,28 +167,22 @@ class Tree {
 				parent.rightChild = successor;
 			}
 
-			//connect successor to current's left child
 			successor.leftChild = current.leftChild;
-		} // end else two children
-		// (successor cannot have a left child)
-		return true;              // success
-	}// end delete()
+		} 
+		return true;     
+	}
 
-	
-	//returns node with next-highest value after delNode
-	//goes right child, then right child's left descendants
 	private Node getSuccessor(Node delNode) {
 		Node successorParent = delNode;
 		Node successor = delNode;
-		Node current = delNode.rightChild;        // go to the right child
-		while (current != null) {                 // until no more
-			successorParent = successor;          // left children
+		Node current = delNode.rightChild;       
+		while (current != null) {            
+			successorParent = successor;        
 			successor = current;
 			current = current.leftChild;
 		}
 
-		if (successor != delNode.rightChild) {    // if successor not right child,
-			//make connections
+		if (successor != delNode.rightChild) {   
 			successorParent.leftChild = successor.rightChild;
 			successor.rightChild = delNode.rightChild;
 		}
@@ -264,8 +249,7 @@ class Tree {
 		globalStack.push(root);
 		int nBlanks = 32;
 		boolean isRowEmpty = false;
-		System.out.println(
-				".................................................................");
+		System.out.println(".................................................................");
 		while (isRowEmpty==false) {
 			Stack<Node> localStack = new Stack<Node>();
 			isRowEmpty = true;
@@ -294,20 +278,18 @@ class Tree {
 				for (int j = 0; j < nBlanks*2-2; j++) {
 					System.out.print(' ');
 				}
-			} // end while globalStack not empty
+			}
 			System.out.println();
 			nBlanks /= 2;
 			while (localStack.isEmpty()==false) {
 				globalStack.push(localStack.pop());
-			} // end while isRowEmpty is false
-			System.out.println(
-			".................................................................");
-		} // end displayTree()
+			}
+			System.out.println(".................................................................");
+		}
 		
 		
-	} // end class Tree
+	} 
 }
-////////////////////////////////////////////////////////////////
 
 class TreeApp {
 
@@ -368,8 +350,7 @@ class TreeApp {
 		theTree.makeTree(theQueue.poll());
 		theTree.displayTree();
 		
-	} // end main()
-
+	}
 	
 	private static String getString() throws IOException {
 		InputStreamReader isr = new InputStreamReader(System.in);
@@ -387,8 +368,7 @@ class TreeApp {
 		String s = getString();
 		return Integer.parseInt(s);
 	}	
-}  // end TreeApp class
-////////////////////////////////////////////////////////////////
+}
 
 class NodeComparator implements Comparator<Node>
 {
