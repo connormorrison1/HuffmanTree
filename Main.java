@@ -2,7 +2,7 @@
  * Authors: Connor Morrison, Christopher Miller
  * Date:12/06/17
  * Overview: This program creates a Huffman Tree from a text document, encodes the document, then decodes it.
- * Some code for the Tree class attributed by Robert Lafore. 2002.Data Structures and Algorithms in Java(2 ed.). Sams, Indianapolis, IN, USA
+ * Some code for the Tree class attributed by Robert Lafore. 2002 Data Structures and Algorithms in Java (2 ed.). Sams, Indianapolis, IN, USA
  * */
 package assignmentOne;
 
@@ -15,14 +15,12 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.PriorityQueue;
 import java.util.Stack;
-//the node class
+
 class Node{
-	//setting up the left and right node pointers for huffman tree
 	public Node leftNode;
 	public Node rightNode;
 	public int freq;
 	public String id;
-	
 	public boolean hasChild()
 	{
 		if(leftNode != null || rightNode != null)
@@ -36,9 +34,7 @@ class Node{
 	}
 }
 
-//credit to Robert Lafore for a part of the Tree class given in more detail at top of program.
 class Tree{
-	//the root node of huffman tree
 	public Node root;
 	public Tree(){
 		root =null;
@@ -47,35 +43,32 @@ class Tree{
 	{
 		root = n;
 	}
-	//creating the code table
 	ArrayList<String> codes = new ArrayList<String>();
 	ArrayList<String> id = new ArrayList<String>();
-	public void codeTable(Node localRoot,String encodedStr){
-		//checking to make sure the current node is not null
-        if (localRoot!=null){
-        	//checking if leftNode exists, if so then go left and add a 0
-            if (localRoot.leftNode!=null){
-            	codeTable(localRoot.leftNode, encodedStr+"0");
-            }
-        	//checking if rightNode exists, if so then go right and add a 1
-            if (localRoot.rightNode!=null){   
-            	codeTable(localRoot.rightNode,encodedStr+"1");
-            }
-            else{
-            	//if both null then the id needs to be added
-            	codes.add(encodedStr);
-                id.add(localRoot.id);
-            }
-        }       
-    }
+	public void codeTable(Node localRoot,String encodedStr) {
+		if (localRoot!=null) {
+			//checking if leftNode exists, if so then go left and add a 0
+		        if (localRoot.leftNode!=null) {
+				codeTable(localRoot.leftNode, encodedStr+"0");
+		    	}
+			//checking if rightNode exists, if so then go right and add a 1
+		    	if (localRoot.rightNode!=null) {   
+				codeTable(localRoot.rightNode,encodedStr+"1");
+		   	}
+		    	else {
+				codes.add(encodedStr);
+				id.add(localRoot.id);
+		    	}
+		}       
+    	}
 	//printing code table
 	String[][] codeT;
-	public void constructCodeTable(int size){
+	public void constructCodeTable(int size) {
 		codeT = new String[size][2];
 		System.out.println("Code Table");
 		System.out.println("----------");
-		//grabbing the id and code for each element.
-		for(int i =0; i < codes.size(); i++){
+		//getting the id and code for each element.
+		for(int i =0; i < codes.size(); i++) {
 			codeT[i][0] = id.get(i);
 			codeT[i][1] = codes.get(i);
 			System.out.print(codeT[i][0] + "    " + codeT[i][1]);
@@ -83,15 +76,15 @@ class Tree{
 		}
 	}
 	//displaying the encoded message
-	public String displayEncode(String origText){
+	public String displayEncode(String origText) {
 		String encoded = "";
 		String brokenEncoded = "";
 		String[] brokenUp = origText.split("");
 		//loop through each arrayList
 		//find where id = codes index and push code to encoded string.
-		for(int i = 0; i < brokenUp.length; i++){
-			for(int x = 0; x < id.size(); x++){
-				if(brokenUp[i].equals(id.get(x))){
+		for(int i = 0; i < brokenUp.length; i++) {
+			for(int x = 0; x < id.size(); x++) {
+				if(brokenUp[i].equals(id.get(x))) {
 					encoded+=codes.get(x);
 					brokenEncoded+= codes.get(x)+" ";
 				}
@@ -101,14 +94,14 @@ class Tree{
 		return brokenEncoded;
 	}
 	//decode the string method
-	public String decode(String encoded){
+	public String decode(String encoded) {
 		String decoded = "";
 		String brokenDecoded = "";
 		String[] brokenUp = encoded.split(" ");
 		//find where id = code index and grab id and push to decoded string
-		for(int i = 0; i < brokenUp.length; i++){
-			for(int x = 0; x < codes.size(); x++){
-				if(brokenUp[i].equals(codes.get(x))){
+		for(int i = 0; i < brokenUp.length; i++) {
+			for(int x = 0; x < codes.size(); x++) {
+				if(brokenUp[i].equals(codes.get(x))) {
 					decoded+=id.get(x);
 					brokenDecoded+= id.get(x);
 				}
@@ -117,8 +110,9 @@ class Tree{
 		System.out.println(brokenDecoded);
 		return brokenDecoded;
 	}
-} // end class Tree
-public class main {
+}
+
+public class Main {
 	public static void main(String[] args)throws IOException{
 		//create the tree
 		Tree theTree = new Tree();
@@ -194,10 +188,10 @@ public class main {
 		String[] compon = {" ", "a","b","c","d","e","f","g","h","i","j","k","l","m","n","o","p","q","r","s","t","u","v","w","x","y","z"};
 		String[] compon2 = {"A","B","C","D","E","F","G","H","I","J","K","L","M","N","O","P","Q","R","S","T","U","V","W","X","Y","Z"};
 		//checking to see what element is contained within each portion of the message.
-		//checking lowercase
-		for(int i2 = 0; i2 < comps.length; i2++){
-			for(int w2 = 0; w2<compon.length; w2++){
-				if(comps[i2].equals(compon[w2])){
+		for(int i2 = 0; i2 < comps.length; i2++) {
+			//checking lowercase
+			for(int w2 = 0; w2<compon.length; w2++) {
+				if(comps[i2].equals(compon[w2])) {
 					//increment the count of of the specified letter.
 					int val = Integer.parseInt(multi[w2][1]);
 					val+=1;
@@ -229,8 +223,8 @@ public class main {
 		String[][] finTable = new String[id.length][2];
 		int totalLetters = 0;
 		System.out.println("");
-	    System.out.println("Frequency Table");
-	    System.out.println("---------------");
+	    	System.out.println("Frequency Table");
+	    	System.out.println("---------------");
 		System.out.println("CHAR   COUNT");
 		for(int t4 = 0; t4 < id.length; t4++){
 			if(id[t4] != null){
@@ -292,7 +286,7 @@ public class main {
 	
 
 }
-//NodeComparator class for the comparator	
+
 class NodeComparator implements Comparator<Node>
 {
 	//compare the two nodes
